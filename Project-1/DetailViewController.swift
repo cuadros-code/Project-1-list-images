@@ -8,11 +8,14 @@
 import UIKit
 
 class DetailViewController: UIViewController {
-
+    @IBOutlet weak var ImageView: UIImageView!
+    
+    var selectedImage: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        print(selectedImage)
     }
     
 
