@@ -15,17 +15,10 @@ class ViewController: UITableViewController {
         super.viewDidLoad()
         
         title = "Storm Viewer"
-        
         navigationController?.navigationBar.prefersLargeTitles = true
         
         let fm = FileManager.default
         let path = Bundle.main.resourcePath!
-//        let items = try! fm.contentsOfDirectory(atPath: path)
-//        for item in items {
-//            if(item.hasPrefix("nssl")){
-//                pictures.append(item)
-//            }
-//        }
         
         if let items = try? fm.contentsOfDirectory(atPath: path){
             for item in items {
@@ -33,6 +26,7 @@ class ViewController: UITableViewController {
                     pictures.append(item)
                 }
             }
+            pictures.sort()
         }
     }
     
@@ -53,6 +47,8 @@ class ViewController: UITableViewController {
             
             // Set selected image on Tap
             detailVC.selectedImage = pictures[indexPath.row]
+            detailVC.totalImages = pictures.count
+            detailVC.selectedIndex = indexPath.row + 1
             
             // Navigate DetailView
             navigationController?.pushViewController(detailVC, animated: true)
