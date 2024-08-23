@@ -20,7 +20,7 @@ class ViewController: UITableViewController {
         let fm = FileManager.default
         let path = Bundle.main.resourcePath!
         
-        DispatchQueue.global().async { [weak self] in
+        DispatchQueue.global(qos: .background).async { [weak self] in
             if let items = try? fm.contentsOfDirectory(atPath: path){
                 for item in items {
                     if(item.hasPrefix("nssl")){
