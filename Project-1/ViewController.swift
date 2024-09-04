@@ -10,6 +10,7 @@ import UIKit
 class ViewController: UITableViewController {
 
     var pictures = [String]()
+    var timesSeen = [String: Int]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +36,10 @@ class ViewController: UITableViewController {
             }
         }
         
+        let defaults = UserDefaults.standard
+        if let savedSeen = defaults.dictionary(forKey: "times") as? [String: Int] {
+            timesSeen = savedSeen
+        }
         
     }
     
@@ -44,7 +49,11 @@ class ViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Picture", for: indexPath)
-        cell.textLabel?.text = "Image \(pictures[indexPath.row])"
+        let cellTitle = "Image \(pictures[indexPath.row])"
+        let seen = timesSeen[cellTitle] ?? 0
+        cell.textLabel?.text = cellTitle
+        cell.detailTextLabel?.text = "Seen: \(seen)"
+        
         return cell
     }
     
@@ -53,15 +62,27 @@ class ViewController: UITableViewController {
         // Get the DetailViewController
         if let detailVC = storyboard?.instantiateViewController(withIdentifier: "Detail") as? DetailViewController {
             
+            // Save times seen image
+            if let cellName = tableView.cellForRow(at: indexPath)?.textLabel?.text {
+                timesSeen[cellName] = (timesSeen[cellName] ?? 0) + 1
+            }
+            
             // Set selected image on Tap
             detailVC.selectedImage = pictures[indexPath.row]
             detailVC.totalImages = pictures.count
             detailVC.selectedIndex = indexPath.row + 1
+            tableView.reloadRows(at: [indexPath], with: .fade)
             
+            saveData()
             // Navigate DetailView
             navigationController?.pushViewController(detailVC, animated: true)
         }
         
+    }
+    
+    func saveData(){
+        let defaults = UserDefaults.standard
+        defaults.setValue(timesSeen, forKey: "times")
     }
 
 
